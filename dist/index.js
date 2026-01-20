@@ -248,7 +248,7 @@ var buttonVariants = cva(
         quaternary: "bg-gray-50/[0.02] text-light backdrop-blur-[6px] hover:shadow-[inset_0px_8px_8px_-2px_#23232314] hover:backdrop-blur-md hover:bg-gray-200/10 active:bg-gray-25 active:shadow-[0px_0px_0px_3px] active:text-gray-900 active:shadow-[#46464659]"
       },
       size: {
-        xs: "text-base px-spacing-sm",
+        xs: "text-sm px-spacing-md",
         sm: "text-xl leading-[30px] px-spacing-md",
         md: "font-bold text-2xl leading-[36px] px-spacing-lg",
         lg: "font-bold text-[32px] leading-[48px] px-spacing-xl"
@@ -2456,22 +2456,86 @@ function Modal({
 
 // src/components/NestedDropdown.tsx
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";
-import React26, { useState as useState6, useRef as useRef4, useEffect as useEffect6 } from "react";
+import React26, {
+  useState as useState6,
+  useRef as useRef4,
+  useEffect as useEffect6,
+  useCallback as useCallback4,
+  useMemo as useMemo2
+} from "react";
+var flattenData = (items, getChildren, parentPath = []) => {
+  return items.reduce(
+    (acc, item) => {
+      const currentPath = [...parentPath, item];
+      acc.push({ item, path: currentPath });
+      const children = getChildren(item);
+      if (children && children.length > 0) {
+        acc.push(...flattenData(children, getChildren, currentPath));
+      }
+      return acc;
+    },
+    []
+  );
+};
 var NestedDropdown = ({
   data,
   onSelect,
-  placeholder = "Select Industry",
+  placeholder = "Select",
+  className,
+  maxHeight = 200,
   getChildren = (item) => item.children
 }) => {
   const [isOpen, setIsOpen] = useState6(false);
   const [selectedItem, setSelectedItem] = useState6(null);
   const [activePath, setActivePath] = useState6([]);
+  const [searchQuery, setSearchQuery] = useState6("");
+  const [focusedIndex, setFocusedIndex] = useState6(null);
   const dropdownRef = useRef4(null);
+  const searchInputRef = useRef4(null);
+  const itemRefs = useRef4(/* @__PURE__ */ new Map());
+  const flattenedData = useMemo2(
+    () => flattenData(data, getChildren),
+    [data, getChildren]
+  );
+  const filteredData = useMemo2(() => {
+    if (!searchQuery?.trim()) return data;
+    const searchLower = searchQuery.toLowerCase();
+    const matchingItems = flattenedData?.filter(
+      ({ item }) => String(item.name).toLowerCase().includes(searchLower)
+    );
+    const rootIds = /* @__PURE__ */ new Set();
+    matchingItems.forEach(({ path }) => {
+      if (path[0]) rootIds.add(path[0]._id);
+    });
+    return data.filter((item) => rootIds.has(item._id));
+  }, [data, flattenedData, searchQuery]);
+  const getCurrentLevelData = useCallback4(() => {
+    let currentData = filteredData;
+    for (let i = 0; i < activePath?.length; i++) {
+      const pathItem = activePath[i];
+      const children = getChildren(pathItem);
+      if (children && children.length > 0) {
+        if (searchQuery.trim()) {
+          const childIds = flattenedData.filter(({ path }) => path[i + 1] && path[i]._id === pathItem._id).map(({ item }) => item._id);
+          currentData = children.filter(
+            (child) => childIds.includes(child._id)
+          );
+        } else {
+          currentData = children;
+        }
+      } else {
+        break;
+      }
+    }
+    return currentData;
+  }, [filteredData, activePath, getChildren, flattenedData, searchQuery]);
   useEffect6(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
         setActivePath([]);
+        setSearchQuery("");
+        setFocusedIndex(null);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -2479,103 +2543,254 @@ var NestedDropdown = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+  useEffect6(() => {
+    if (isOpen && searchInputRef.current) {
+      setTimeout(() => {
+        searchInputRef.current?.focus();
+      }, 0);
+    }
+  }, [isOpen]);
+  useEffect6(() => {
+    setFocusedIndex(null);
+  }, [activePath, searchQuery]);
+  useEffect6(() => {
+    const handleKeyDown = (e) => {
+      if (!isOpen) return;
+      const currentLevelData = getCurrentLevelData();
+      if (currentLevelData.length === 0) return;
+      switch (e.key) {
+        case "Escape":
+          setIsOpen(false);
+          setActivePath([]);
+          setSearchQuery("");
+          setFocusedIndex(null);
+          break;
+        case "Tab":
+          if (!e.shiftKey && focusedIndex === null) {
+            e.preventDefault();
+            setFocusedIndex({ level: activePath.length, index: 0 });
+          }
+          break;
+        case "ArrowDown":
+          e.preventDefault();
+          handleArrowNavigation(1);
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          handleArrowNavigation(-1);
+          break;
+        case "ArrowRight":
+          e.preventDefault();
+          handleArrowNavigation(0, "right");
+          break;
+        case "ArrowLeft":
+          e.preventDefault();
+          if (activePath.length > 0) {
+            setActivePath((prev) => prev.slice(0, -1));
+          }
+          break;
+        case "Enter":
+          e.preventDefault();
+          if (focusedIndex) {
+            const { level, index } = focusedIndex;
+            const currentLevelData2 = getCurrentLevelData();
+            const item = currentLevelData2[index];
+            if (item) {
+              handleCategoryClick(item, level);
+            }
+          }
+          break;
+      }
+    };
+    const handleArrowNavigation = (direction, horizontal) => {
+      const currentLevelData = getCurrentLevelData();
+      if (currentLevelData.length === 0) return;
+      if (horizontal === "right") {
+        const item2 = currentLevelData[focusedIndex?.index || 0];
+        if (item2) {
+          const children = getChildren(item2);
+          if (children && children.length > 0) {
+            handleCategoryClick(item2, activePath.length);
+          }
+        }
+        return;
+      }
+      const currentIndex = focusedIndex?.index ?? -1;
+      const newIndex = Math.max(
+        0,
+        Math.min(currentLevelData.length - 1, currentIndex + direction)
+      );
+      setFocusedIndex({ level: activePath.length, index: newIndex });
+      const item = currentLevelData[newIndex];
+      if (item) {
+        const key = `${activePath.length}-${item._id}`;
+        const element = itemRefs.current.get(key);
+        element?.scrollIntoView({ block: "nearest" });
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, focusedIndex, activePath, getCurrentLevelData, getChildren]);
   const handleItemClick = (item, path) => {
     setSelectedItem(item);
     setIsOpen(false);
     setActivePath([]);
+    setSearchQuery("");
+    setFocusedIndex(null);
     onSelect?.(item, path);
   };
   const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-    if (isOpen) {
+    const newIsOpen = !isOpen;
+    setIsOpen(newIsOpen);
+    if (!newIsOpen) {
       setActivePath([]);
+      setSearchQuery("");
+      setFocusedIndex(null);
     }
   };
-  const handleCategoryClick = (item, level, event) => {
-    const children = getChildren(item);
-    const currentPath = activePath.slice(0, level);
-    currentPath[level] = item;
-    const isDoubleClick = event?.detail === 2;
-    if (children && children.length > 0 && !isDoubleClick) {
-      setActivePath(currentPath);
-    } else {
-      handleItemClick(item, [...currentPath]);
-    }
+  const handleCategoryClick = useCallback4(
+    (item, level, event) => {
+      const children = getChildren(item);
+      const currentPath = activePath.slice(0, level);
+      currentPath[level] = item;
+      const isDoubleClick = event?.detail === 2;
+      if (children && children.length > 0 && !isDoubleClick) {
+        setActivePath(currentPath);
+      } else {
+        handleItemClick(item, [...currentPath]);
+      }
+    },
+    [activePath, getChildren]
+  );
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setActivePath([]);
+    setFocusedIndex(null);
   };
-  return /* @__PURE__ */ React26.createElement("div", { className: "relative w-full max-w-[200px]", ref: dropdownRef }, /* @__PURE__ */ React26.createElement(
-    "button",
+  const handleItemFocus = (level, index) => {
+    setFocusedIndex({ level, index });
+  };
+  const renderDropdownItems = (items, level) => {
+    const currentData = items || [];
+    return currentData.map((item, index) => {
+      const children = getChildren(item);
+      const hasChildren = children && children.length > 0;
+      const isActive = activePath[level]?._id === item._id;
+      const isFocused = focusedIndex?.level === level && focusedIndex.index === index;
+      const itemKey = `${level}-${item._id}`;
+      return /* @__PURE__ */ React26.createElement(
+        "div",
+        {
+          key: item._id,
+          ref: (el) => {
+            if (el) {
+              itemRefs.current.set(itemKey, el);
+            } else {
+              itemRefs.current.delete(itemKey);
+            }
+          },
+          className: cn(
+            "group flex items-center justify-between py-2 px-3 border border-transparent cursor-pointer",
+            "transition-colors duration-200 relative",
+            isActive ? "bg-primary-50 dark:bg-primary-900/40 text-primary-700 border border-primary-200 dark:border-primary-800" : "hover:bg-gray-100 dark:hover:bg-gray-800"
+            // isFocused && "ring-1 ring-primary-500 dark:ring-primary-400",
+          ),
+          onClick: (e) => handleCategoryClick(item, level, e),
+          onMouseEnter: () => handleItemFocus(level, index),
+          tabIndex: isFocused ? 0 : -1
+        },
+        /* @__PURE__ */ React26.createElement(
+          "span",
+          {
+            className: cn(
+              "text-sm",
+              isActive ? "text-gray-900 dark:text-black font-medium" : "text-gray-800 dark:text-gray-200"
+            )
+          },
+          item.name
+        ),
+        hasChildren && /* @__PURE__ */ React26.createElement(React26.Fragment, null, /* @__PURE__ */ React26.createElement(FiChevronRight, { className: "w-4 h-4 text-gray-400" }), /* @__PURE__ */ React26.createElement("div", { className: "absolute opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-gray-800 text-white text-xs py-1 px-2 rounded bottom-full mb-1 left-1/2 transform -translate-x-1/2 whitespace-nowrap z-10" }, "Double-click to select", /* @__PURE__ */ React26.createElement("div", { className: "absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800" })))
+      );
+    });
+  };
+  return /* @__PURE__ */ React26.createElement(
+    "div",
     {
-      type: "button",
-      className: "w-full flex justify-between items-center py-3 px-4 text-sm bg-white border border-gray-300 rounded-lg shadow-sm text-left focus:outline-none focus:ring-1 focus:ring-primary-600 focus:border-primary-500 hover:border-gray-400 transition-colors duration-200",
-      onClick: toggleDropdown
+      className: cn("relative w-full max-w-[200px]", className),
+      ref: dropdownRef
     },
     /* @__PURE__ */ React26.createElement(
-      "span",
+      "button",
       {
-        className: `whitespace-nowrap text-ellipsis overflow-hidden w-[180px] ${selectedItem ? "text-gray-900 font-medium" : "text-gray-500"}`
+        type: "button",
+        className: cn(
+          "w-full flex justify-between items-center py-2 px-3 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-300 rounded-lg shadow-sm text-left focus:outline-none focus:ring-1 focus:ring-primary-600 focus:border-primary-500 hover:border-gray-400 transition-colors duration-200"
+        ),
+        onClick: toggleDropdown,
+        "aria-haspopup": "listbox",
+        "aria-expanded": isOpen
       },
-      selectedItem ? selectedItem.name : placeholder
+      /* @__PURE__ */ React26.createElement(
+        "span",
+        {
+          className: cn(
+            "whitespace-nowrap text-ellipsis overflow-hidden w-[180px]",
+            selectedItem ? "font-medium text-gray-900 dark:text-gray-100" : "text-gray-500 dark:text-gray-400"
+          )
+        },
+        selectedItem ? selectedItem.name : placeholder
+      ),
+      /* @__PURE__ */ React26.createElement(
+        FiChevronDown,
+        {
+          className: `w-5 h-5 text-gray-400 transform transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`
+        }
+      )
     ),
-    /* @__PURE__ */ React26.createElement(
-      FiChevronDown,
-      {
-        className: `w-5 h-5 text-gray-400 transform transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`
-      }
-    )
-  ), isOpen && /* @__PURE__ */ React26.createElement("div", { className: "absolute z-50 w-[200px] mt-1 bg-white rounded-lg shadow-xl max-h-96" }, /* @__PURE__ */ React26.createElement("div", { className: "flex flex-col h-full" }, /* @__PURE__ */ React26.createElement("div", { className: "border-b border-gray-200" }, /* @__PURE__ */ React26.createElement("div", { className: "relative" }, /* @__PURE__ */ React26.createElement(
-    "input",
-    {
-      type: "text",
-      placeholder: "Search",
-      className: "w-full pl-3 pr-4 py-2 focus:outline-none focus:border-b focus:border-b-primary-600 text-sm"
-    }
-  ), /* @__PURE__ */ React26.createElement("div", { className: "absolute right-2 top-1/2 transform -translate-y-1/2" }, /* @__PURE__ */ React26.createElement("span", { className: "text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded" }, "Q")))), /* @__PURE__ */ React26.createElement("div", { className: "flex-1 overflow-y-auto bg-white max-h-[200px]" }, /* @__PURE__ */ React26.createElement("div", { className: "" }, data?.map((item) => {
-    const children = getChildren(item);
-    const hasChildren = children && children.length > 0;
-    const isActive = activePath[0]?._id === item._id;
-    return /* @__PURE__ */ React26.createElement(
+    isOpen && /* @__PURE__ */ React26.createElement(
       "div",
       {
-        key: item._id,
-        className: `
-                        group flex items-center justify-between py-2 px-3 border border-transparent cursor-pointer
-                        transition-colors duration-200 relative
-                        ${isActive ? "bg-primary-50 text-primary-700 border border-primary-200" : "hover:bg-gray-50"}
-                      `,
-        onClick: (e) => handleCategoryClick(item, 0, e)
+        className: "absolute z-50 w-[200px] mt-1 bg-white dark:bg-gray-900 rounded-lg rounded-b-lg border border-primary-600 shadow-xl max-h-96",
+        role: "listbox"
       },
-      /* @__PURE__ */ React26.createElement("span", { className: "text-sm text-gray-800" }, item.name),
-      hasChildren && /* @__PURE__ */ React26.createElement(React26.Fragment, null, /* @__PURE__ */ React26.createElement(FiChevronRight, { className: "w-4 h-4 text-gray-400" }))
-    );
-  })))), activePath?.length > 0 && /* @__PURE__ */ React26.createElement("div", { className: "absolute left-full top-[36px] flex" }, activePath?.map((pathItem, level) => {
-    const children = getChildren(pathItem);
-    return /* @__PURE__ */ React26.createElement(
-      "div",
-      {
-        key: pathItem._id,
-        className: "w-[200px] bg-white border border-gray-200 shadow-xl rounded-b-lg max-h-[200px] overflow-y-auto"
-      },
-      /* @__PURE__ */ React26.createElement("div", { className: "" }, /* @__PURE__ */ React26.createElement("div", { className: "" }, children?.map((child) => {
-        const childChildren = getChildren(child);
-        const hasChildren = childChildren && childChildren.length > 0;
-        const isActive = activePath[level + 1]?._id === child._id;
+      /* @__PURE__ */ React26.createElement("div", { className: "flex flex-col h-full" }, /* @__PURE__ */ React26.createElement("div", { className: "border-b border-gray-200 dark:border-gray-700 " }, /* @__PURE__ */ React26.createElement("div", { className: "relative" }, /* @__PURE__ */ React26.createElement(
+        "input",
+        {
+          ref: searchInputRef,
+          type: "text",
+          placeholder: "Search",
+          value: searchQuery,
+          onChange: handleSearchChange,
+          className: "w-full rounded-t-lg pl-3 pr-4 py-2 focus:outline-none focus:border-b focus:border-b-primary-600 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100",
+          "aria-label": "Search items"
+        }
+      ), /* @__PURE__ */ React26.createElement("div", { className: "absolute right-2 top-1/2 transform -translate-y-1/2" }, /* @__PURE__ */ React26.createElement("span", { className: "text-xs text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded" }, "Q")))), /* @__PURE__ */ React26.createElement(
+        "div",
+        {
+          style: { maxHeight },
+          className: "flex-1 overflow-y-auto bg-white rounded-b-lg dark:bg-gray-900"
+        },
+        /* @__PURE__ */ React26.createElement("div", { className: "" }, filteredData.length > 0 ? renderDropdownItems(filteredData, 0) : /* @__PURE__ */ React26.createElement("div", { className: "py-2 px-3 text-sm text-gray-500 dark:text-gray-400" }, "No results found"))
+      )),
+      activePath?.length > 0 && /* @__PURE__ */ React26.createElement("div", { className: "absolute left-full top-[36px] flex" }, activePath?.map((pathItem, level) => {
+        const children = getChildren(pathItem);
+        if (!children || children.length === 0) return null;
+        const displayChildren = searchQuery.trim() ? children.filter(
+          (child) => flattenedData.some(({ item }) => item._id === child._id)
+        ) : children;
+        if (displayChildren.length === 0) return null;
         return /* @__PURE__ */ React26.createElement(
           "div",
           {
-            key: child._id,
-            className: `
-                                group flex items-center justify-between py-2 px-3 border border-transparent cursor-pointer
-                                transition-colors duration-200 relative
-                                ${isActive ? "bg-primary-50 text-primary-700 border border-primary-200" : "hover:bg-gray-50"}
-                              `,
-            onClick: (e) => handleCategoryClick(child, level + 1, e)
+            style: { maxHeight },
+            key: pathItem._id,
+            className: "w-[200px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-xl rounded-b-lg overflow-y-auto"
           },
-          /* @__PURE__ */ React26.createElement("span", { className: "text-sm text-gray-800" }, child.name),
-          hasChildren && /* @__PURE__ */ React26.createElement(React26.Fragment, null, /* @__PURE__ */ React26.createElement(FiChevronRight, { className: "w-4 h-4 text-gray-400" }), /* @__PURE__ */ React26.createElement("div", { className: "absolute opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-gray-800 text-white text-xs py-1 px-2 rounded bottom-full mb-1 left-1/2 transform -translate-x-1/2 whitespace-nowrap z-10" }, "Double-click to select", /* @__PURE__ */ React26.createElement("div", { className: "absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800" })))
+          /* @__PURE__ */ React26.createElement("div", { className: "" }, renderDropdownItems(displayChildren, level + 1))
         );
-      })))
-    );
-  }))));
+      }))
+    )
+  );
 };
 var NestedDropdown_default = NestedDropdown;
 

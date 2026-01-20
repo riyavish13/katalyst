@@ -1,21 +1,5 @@
 "use client";
-import Accordion, {
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/Accordion";
-import Card, {
-  CardBg,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/Card";
 import nature from "../../public/assets/nature.png";
-import Chip from "@/components/Chip";
-import ImageCard from "@/components/ImageCard";
-import StatsCard from "@/components/StatsCard";
 import { LuAngry, LuAnnoyed, LuHeart } from "react-icons/lu";
 import {
   Caption,
@@ -33,12 +17,52 @@ import {
   TabPanel,
   TabsContainer,
   Textarea,
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+  Button,
+  Callout,
+  Card,
+  CardBg,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  Chip,
+  CircularProgress,
+  Dropdown,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+  FillButton,
+  FloatingButton,
+  Footer,
+  FooterContent,
+  FooterHeader,
+  FooterIcons,
+  FooterList,
+  ImageCard,
+  Input,
+  Label,
+  ListPagination,
+  NestedDropdown,
+  Notice,
+  Progress,
+  Slider,
+  Toggle,
+  TreeView,
+  StatsCard,
+  Checkbox,
   Typography,
 } from "@/components";
-import Checkbox from "@/components/Checkbox";
-import Input from "@/components/Input";
-import Label from "@/components/Label";
-import Toggle from "@/components/Toggle";
 import { useTheme } from "@/context/ThemeContext";
 import React, { useEffect, useState } from "react";
 import {
@@ -65,39 +89,11 @@ import {
   RiSunLine,
   RiTwitterLine,
 } from "react-icons/ri";
-import Button from "@/components/Button";
-import Footer, {
-  FooterContent,
-  FooterHeader,
-  FooterIcons,
-  FooterList,
-} from "@/components/Footer";
 import Image from "next/image";
 import { HiMiniBars3BottomRight, HiXMark } from "react-icons/hi2";
-import Slider from "@/components/Slider";
-import ListPagination from "@/components/ListPagination";
-import Callout from "@/components/Callout";
-import NestedDropdown from "@/components/NestedDropdown";
-import Dropdown from "@/components/Dropdown";
-import DropdownMenu, {
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/DropdownMenu";
-import FillButton from "@/components/FillButton";
-import FloatingButton from "@/components/FloatingButton";
 import FileUploadControl, {
   type UploadItem,
 } from "@/components/FileUploadControl";
-import Notice from "@/components/Notice";
-import Progress from "@/components/Progress";
-import CircularProgress from "@/components/CircularProgress";
-import TreeView from "@/components/TreeView";
 
 interface Option {
   label: string | number;
@@ -536,7 +532,6 @@ const Test = () => {
           </div>
         </header>
       </div>
-
       <main className="space-y-5 p-4">
         {/* Typography */}
         <section className="space-y-3">
@@ -795,44 +790,21 @@ const Test = () => {
             </div>
           </section>
         </section>
-        {/* Chip */}
+        {/* File Upload */}
         <section className="space-y-3">
-          <Typography variant="h6">Chips</Typography>
-          <div className="flex gap-4 items-center">
-            <Typography variant="h6">Chips Variant</Typography>
-            <Chip
-              startIcon={<LuAnnoyed />}
-              endIcon={<LuAngry />}
-              variant="primary"
-              size="md"
-            >
-              Primary
-            </Chip>
-            <Chip variant="secondary" size="md">
-              Secondary
-            </Chip>
-            <Chip variant="default" size="md">
-              Default
-            </Chip>
-            <Chip variant="glass" size="md">
-              Glass
-            </Chip>
-          </div>
-          <div className="flex gap-4 items-center my-4">
-            <Typography variant={"h6"}>Sizes - </Typography>
-            <Chip variant="default" size="xs">
-              Default
-            </Chip>
-            <Chip endIcon={<LuHeart />} variant="primary" size="sm">
-              Solid
-            </Chip>
-            <Chip variant="primary" size="md">
-              Primary
-            </Chip>
-            <Chip variant="primary" size="lg">
-              Secondary
-            </Chip>
-          </div>
+          <Typography variant="h6">File Upload</Typography>
+          <FileUploadControl
+            items={items}
+            onAddFiles={handleAddFiles}
+            onUpdateItem={handleUpdateItem}
+            onDelete={handleDelete}
+            onUpload={handleUpload}
+            onPreview={handlePreview}
+            multiple={true}
+            accept="image/*, .pdf, .doc, .docx, .xlsx, .mp3"
+            maxSizeMB={15}
+            hintText="Drag and drop files or click to upload"
+          />
         </section>
         {/* Dropdown */}
         <section className="space-y-3">
@@ -876,20 +848,16 @@ const Test = () => {
             />
           </div>
         </section>
-        {/* File Upload */}
-        <section className="space-y-3">
-          <Typography variant="h6">File Upload</Typography>
-          <FileUploadControl
-            items={items}
-            onAddFiles={handleAddFiles}
-            onUpdateItem={handleUpdateItem}
-            onDelete={handleDelete}
-            onUpload={handleUpload}
-            onPreview={handlePreview}
-            multiple={true}
-            accept="image/*, .pdf, .doc, .docx, .xlsx, .mp3"
-            maxSizeMB={15}
-            hintText="Drag and drop files or click to upload"
+        {/* Nested Dropdown */}
+        <section className="flex items-center flex-wrap gap-5">
+          <Typography variant="h6">Nested Dropdown</Typography>
+          <NestedDropdown
+            data={industryList?.data || []}
+            onSelect={(_, path) => {
+              const pathIds = path?.map((p) => p?._id);
+              console.log("Selected Path IDs:", pathIds);
+            }}
+            placeholder="Select Parent"
           />
         </section>
         {/* Dropdown Menu */}
@@ -1163,339 +1131,351 @@ const Test = () => {
             </DropdownMenu>
           </div>
         </section>
-        {/* Tree View */}
+        {/* Button */}
         <section className="space-y-3">
-          <Typography variant="h6">Tree View</Typography>
-          <TreeView
-            aria-label="Project files"
-            defaultExpandedIds={["frontend"]}
-            className="w-1/2 border border-gray-200 p-3 rounded-md"
-          >
-            {/* FRONTEND SECTION */}
-            <TreeView.Item
-              id="frontend"
-              onSelect={setSelected}
-              selected={selected === "frontend"}
+          <Typography variant="h6">Buttons</Typography>
+          <div className="flex items-center gap-3">
+            <Paragraph variant="b2">Primary:</Paragraph>
+            <Button
+              size={"xs"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
             >
-              <TreeView.LeadingVisual>
-                <RiAlertFill />{" "}
-              </TreeView.LeadingVisual>{" "}
-              Frontend
-              <TreeView.SubTree>
-                <TreeView.Item
-                  id="frontend-react"
-                  onSelect={setSelected}
-                  selected={selected === "frontend-react"}
-                >
-                  React App
-                  <TreeView.SubTree>
-                    <TreeView.Item
-                      id="frontend-react-components"
-                      onSelect={setSelected}
-                      selected={selected === "frontend-react-components"}
-                    >
-                      <TreeView.LeadingVisual>
-                        <RiAlertFill />{" "}
-                      </TreeView.LeadingVisual>{" "}
-                      Components
-                      <TreeView.SubTree>
-                        <TreeView.Item
-                          id="frontend-react-components-button"
-                          onSelect={setSelected}
-                          selected={
-                            selected === "frontend-react-components-button"
-                          }
-                        >
-                          <Button
-                            onClick={() => {
-                              alert("clicked");
-                            }}
-                          >
-                            Click
-                          </Button>
-                        </TreeView.Item>
-                        <TreeView.Item
-                          id="frontend-react-components-modal"
-                          onSelect={setSelected}
-                          selected={
-                            selected === "frontend-react-components-modal"
-                          }
-                        >
-                          Modal
-                        </TreeView.Item>
-                      </TreeView.SubTree>
-                    </TreeView.Item>
-
-                    <TreeView.Item
-                      id="frontend-react-hooks"
-                      onSelect={setSelected}
-                      selected={selected === "frontend-react-hooks"}
-                    >
-                      Hooks
-                    </TreeView.Item>
-                    <TreeView.Item
-                      id="frontend-react-context"
-                      onSelect={setSelected}
-                      selected={selected === "frontend-react-context"}
-                    >
-                      Context
-                    </TreeView.Item>
-                  </TreeView.SubTree>
-                </TreeView.Item>
-
-                <TreeView.Item
-                  id="frontend-next"
-                  onSelect={setSelected}
-                  selected={selected === "frontend-next"}
-                >
-                  Next.js App
-                  <TreeView.SubTree>
-                    <TreeView.Item
-                      id="frontend-next-pages"
-                      onSelect={setSelected}
-                      selected={selected === "frontend-next-pages"}
-                    >
-                      Pages
-                    </TreeView.Item>
-                    <TreeView.Item
-                      id="frontend-next-api"
-                      onSelect={setSelected}
-                      selected={selected === "frontend-next-api"}
-                    >
-                      API Routes
-                    </TreeView.Item>
-                  </TreeView.SubTree>
-                </TreeView.Item>
-              </TreeView.SubTree>
-            </TreeView.Item>
-
-            {/* BACKEND SECTION */}
-            <TreeView.Item
-              id="backend"
-              onSelect={setSelected}
-              selected={selected === "backend"}
+              Button
+            </Button>
+            <Button
+              size={"sm"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
             >
-              Backend
-              <TreeView.SubTree>
-                <TreeView.Item
-                  id="backend-api"
-                  onSelect={setSelected}
-                  selected={selected === "backend-api"}
-                >
-                  API Routes
-                  <TreeView.SubTree>
-                    <TreeView.Item
-                      id="backend-api-auth"
-                      onSelect={setSelected}
-                      selected={selected === "backend-api-auth"}
-                    >
-                      Auth
-                    </TreeView.Item>
-                    <TreeView.Item
-                      id="backend-api-users"
-                      onSelect={setSelected}
-                      selected={selected === "backend-api-users"}
-                    >
-                      Users
-                    </TreeView.Item>
-                    <TreeView.Item
-                      id="backend-api-products"
-                      onSelect={setSelected}
-                      selected={selected === "backend-api-products"}
-                    >
-                      Products
-                    </TreeView.Item>
-                  </TreeView.SubTree>
-                </TreeView.Item>
-
-                <TreeView.Item
-                  id="backend-database"
-                  onSelect={setSelected}
-                  selected={selected === "backend-database"}
-                >
-                  Database
-                  <TreeView.SubTree>
-                    <TreeView.Item
-                      id="backend-database-models"
-                      onSelect={setSelected}
-                      selected={selected === "backend-database-models"}
-                    >
-                      Models
-                    </TreeView.Item>
-                    <TreeView.Item
-                      id="backend-database-migrations"
-                      onSelect={setSelected}
-                      selected={selected === "backend-database-migrations"}
-                    >
-                      Migrations
-                    </TreeView.Item>
-                    <TreeView.Item
-                      id="backend-database-seeds"
-                      onSelect={setSelected}
-                      selected={selected === "backend-database-seeds"}
-                    >
-                      Seeds
-                    </TreeView.Item>
-                  </TreeView.SubTree>
-                </TreeView.Item>
-              </TreeView.SubTree>
-            </TreeView.Item>
-          </TreeView>
-          <TreeView
-            aria-label="Project files"
-            defaultExpandedIds={["frontend"]}
-            className="w-1/2 border border-gray-200 p-3 rounded-md"
-          >
-            {/* FRONTEND */}
-            <TreeView.Item id="frontend">
-              <TreeView.LeadingVisual>
-                <RiFolderFill className="text-blue-500" />
-              </TreeView.LeadingVisual>
-              Frontend
-              <TreeView.SubTree>
-                <TreeView.Item id="frontend-react">
-                  <TreeView.LeadingVisual>
-                    <RiFolderFill className="text-blue-400" />
-                  </TreeView.LeadingVisual>
-                  React App
-                  <TreeView.SubTree>
-                    <TreeView.Item id="frontend-react-components">
-                      Components
-                      <TreeView.SubTree>
-                        <TreeView.Item id="btn-js">
-                          <TreeView.LeadingVisual>
-                            <RiFileTextFill />
-                          </TreeView.LeadingVisual>
-                          Button.tsx
-                        </TreeView.Item>
-                      </TreeView.SubTree>
-                    </TreeView.Item>
-                  </TreeView.SubTree>
-                </TreeView.Item>
-              </TreeView.SubTree>
-            </TreeView.Item>
-
-            {/* BACKEND */}
-            <TreeView.Item id="backend">
-              <TreeView.LeadingVisual>
-                <RiFolderFill className="text-amber-500" />
-              </TreeView.LeadingVisual>
-              Backend
-              <TreeView.SubTree>
-                <TreeView.Item id="backend-api">API Routes</TreeView.Item>
-              </TreeView.SubTree>
-            </TreeView.Item>
-
-            {/* SETTINGS (No SubTree) */}
-            <TreeView.Item id="settings">
-              <TreeView.LeadingVisual>
-                <RiSettings4Line />
-              </TreeView.LeadingVisual>
-              Settings
-            </TreeView.Item>
-          </TreeView>
-          <TreeView
-            aria-label="Files changed"
-            defaultExpandedIds={["src"]}
-            className="w-1/2 border border-gray-200 p-3 rounded-md"
-          >
-            <TreeView.Item
-              id="src"
-              onSelect={setSelected}
-              selected={selected === "src"}
+              Button
+            </Button>
+            <Button
+              size={"md"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
             >
-              <TreeView.LeadingVisual>
-                <RiFolderOpenFill color="#1765dc" size={16} />
-              </TreeView.LeadingVisual>
-              src
-              <TreeView.SubTree>
-                <TreeView.Item
-                  id="src/Avatar.tsx"
-                  onSelect={setSelected}
-                  selected={selected === "src/Avatar.tsx"}
-                >
-                  <TreeView.LeadingVisual>
-                    <RiFileLine size={16} />
-                  </TreeView.LeadingVisual>
-                  Avatar.tsx
-                  <TreeView.TrailingVisual label="Added">
-                    <RiAddLine size={16} />
-                  </TreeView.TrailingVisual>
-                </TreeView.Item>
-
-                <TreeView.Item
-                  id="src/Button.tsx"
-                  onSelect={setSelected}
-                  selected={selected === "src/Button.tsx"}
-                >
-                  <TreeView.LeadingVisual>
-                    <RiFileLine size={16} />
-                  </TreeView.LeadingVisual>
-                  Button.tsx
-                  <TreeView.TrailingVisual label="Modified">
-                    <RiEditLine size={16} />
-                  </TreeView.TrailingVisual>
-                </TreeView.Item>
-              </TreeView.SubTree>
-            </TreeView.Item>
-
-            <TreeView.Item
-              id="package.json"
-              onSelect={setSelected}
-              selected={selected === "package.json"}
+              Button
+            </Button>
+            <Button
+              size={"lg"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
             >
-              <TreeView.LeadingVisual>
-                <RiFileLine size={16} />
-              </TreeView.LeadingVisual>
-              package.json
-              <TreeView.TrailingVisual label="Modified">
-                <RiEditLine size={16} />
-              </TreeView.TrailingVisual>
-            </TreeView.Item>
-          </TreeView>
-          <div className="my-5">
-            <h1>Allow multiple expanded (default)</h1>
-            <TreeView
-              aria-label="Example Tree"
-              className="w-1/2 border border-gray-200 p-3 rounded-md"
-            >
-              <TreeView.Item id="1">
-                Parent 1
-                <TreeView.SubTree>
-                  <TreeView.Item id="1.1">Child 1</TreeView.Item>
-                  <TreeView.Item id="1.2">Child 2</TreeView.Item>
-                </TreeView.SubTree>
-              </TreeView.Item>
-
-              <TreeView.Item id="2">
-                Parent 2
-                <TreeView.SubTree>
-                  <TreeView.Item id="2.1">Child A</TreeView.Item>
-                  <TreeView.Item id="2.2">Child B</TreeView.Item>
-                </TreeView.SubTree>
-              </TreeView.Item>
-            </TreeView>
+              Button
+            </Button>
           </div>
-          <div>
-            <h1>Treeview Mode (only one expanded)</h1>
-            <TreeView
-              aria-label="Accordion Tree"
-              allowMultiple={false}
-              className="w-1/2 border border-gray-200 p-3 rounded-md"
+          <div className="flex items-center gap-3">
+            <Paragraph variant="b2">Primary Light:</Paragraph>
+            <Button
+              size={"xs"}
+              variant={"primary-light"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
             >
-              <TreeView.Item id="1">
-                Section 1
-                <TreeView.SubTree>
-                  <TreeView.Item id="1.1">Item A</TreeView.Item>
-                </TreeView.SubTree>
-              </TreeView.Item>
-              <TreeView.Item id="2">
-                Section 2
-                <TreeView.SubTree>
-                  <TreeView.Item id="2.1">Item B</TreeView.Item>
-                </TreeView.SubTree>
-              </TreeView.Item>
-            </TreeView>
+              Button
+            </Button>
+            <Button
+              size={"sm"}
+              variant={"primary-light"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+            <Button
+              size={"md"}
+              variant={"primary-light"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+            <Button
+              size={"lg"}
+              variant={"primary-light"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+          </div>
+          <div className="flex items-center gap-3">
+            <Paragraph variant="b2">Secondary:</Paragraph>
+            <Button
+              size={"xs"}
+              variant={"secondary"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+            <Button
+              size={"sm"}
+              variant={"secondary"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+            <Button
+              size={"md"}
+              variant={"secondary"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+            <Button
+              size={"lg"}
+              variant={"secondary"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+          </div>
+          <div className="flex items-center gap-3">
+            <Paragraph variant="b2">Tertiary:</Paragraph>
+            <Button
+              size={"xs"}
+              variant={"tertiary"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+            <Button
+              size={"sm"}
+              variant={"tertiary"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+            <Button
+              size={"md"}
+              variant={"tertiary"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+            <Button
+              size={"lg"}
+              variant={"tertiary"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+          </div>
+          <div
+            className="flex items-center gap-3 div-glass py-5 px-4"
+            style={{ backgroundImage: `url(${nature.src})`, height: "150px" }}
+          >
+            <Paragraph variant="b2" className="text-light">
+              Quaternary:
+            </Paragraph>
+            <Button
+              size={"xs"}
+              variant={"quaternary"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+            <Button
+              size={"sm"}
+              variant={"quaternary"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+            <Button
+              size={"md"}
+              variant={"quaternary"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+            <Button
+              size={"lg"}
+              variant={"quaternary"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+          </div>
+          <div className="flex items-center gap-3">
+            <Paragraph variant="b2">Disabled:</Paragraph>
+            <Button
+              size={"sm"}
+              disabled
+              variant={"tertiary"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+          </div>
+          <div className="flex items-center gap-3">
+            <Paragraph variant="b2">Rounded:</Paragraph>
+            <Button
+              size={"sm"}
+              rounded
+              variant={"primary"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+            <Button
+              size={"sm"}
+              rounded
+              variant={"primary-light"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+            <Button
+              size={"sm"}
+              rounded
+              variant={"secondary"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+            <Button
+              size={"sm"}
+              rounded
+              variant={"tertiary"}
+              startIcon={<RiAddLine />}
+              endIcon={<RiAddLine />}
+            >
+              Button
+            </Button>
+          </div>
+        </section>
+        {/* Fill Button */}
+        <section>
+          <Typography variant="h6">Fill Button</Typography>
+          <FillButton
+            label="Button"
+            fillColor="bg-primary-600"
+            textHoverColor="group-hover:text-white"
+            icon={RiCheckLine}
+            className="w-[150px]"
+          />
+        </section>
+        {/* Floating Button */}
+        <section className="flex items-center gap-5">
+          <Typography variant="h6">Floating Button</Typography>
+          <Button
+            onClick={() => setShowButton((prev) => !prev)}
+            aria-expanded={showButton}
+          >
+            {showButton ? "Hide" : "Show"}
+          </Button>
+          {showButton && (
+            <div>
+              <FloatingButton
+                onClick={() => alert("Button Clicked!!")}
+                position="bottom-center"
+                variant={"quaternary"}
+                className="text-primary-500 border border-primary-500"
+              >
+                <RiAddLine />
+              </FloatingButton>
+              <FloatingButton
+                onClick={() => alert("Button Clicked!!")}
+                variant={"primary-light"}
+                position="bottom-left"
+              >
+                <RiAddLine />
+              </FloatingButton>
+              <FloatingButton
+                onClick={() => alert("Button Clicked!!")}
+                position="bottom-right"
+                variant={"secondary"}
+              >
+                <RiAddLine />
+              </FloatingButton>{" "}
+              <FloatingButton
+                onClick={() => alert("Button Clicked!!")}
+                position="top-left"
+                variant={"tertiary"}
+              >
+                <RiAddLine />
+              </FloatingButton>{" "}
+              <FloatingButton
+                onClick={() => alert("Button Clicked!!")}
+                position="top-right"
+              >
+                <RiAddLine />
+              </FloatingButton>
+            </div>
+          )}
+        </section>
+        {/* Slider */}
+        <section className="space-y-3">
+          <Typography variant={"h6"}>Slider</Typography>
+          <Slider
+            value={sliderValue}
+            min={10}
+            max={200}
+            onChange={(e) => handleSliderChange(Number(e.target.value))}
+          />
+          <Slider
+            value={sliderValue}
+            min={10}
+            max={200}
+            size="lg"
+            onChange={(e) => handleSliderChange(Number(e.target.value))}
+          />
+        </section>
+        {/* Chip */}
+        <section className="space-y-3">
+          <Typography variant="h6">Chips</Typography>
+          <div className="flex gap-4 items-center">
+            <Typography variant="h6">Chips Variant</Typography>
+            <Chip
+              startIcon={<LuAnnoyed />}
+              endIcon={<LuAngry />}
+              variant="primary"
+              size="md"
+            >
+              Primary
+            </Chip>
+            <Chip variant="secondary" size="md">
+              Secondary
+            </Chip>
+            <Chip variant="default" size="md">
+              Default
+            </Chip>
+            <Chip variant="glass" size="md">
+              Glass
+            </Chip>
+          </div>
+          <div className="flex gap-4 items-center my-4">
+            <Typography variant={"h6"}>Sizes - </Typography>
+            <Chip variant="default" size="xs">
+              Default
+            </Chip>
+            <Chip endIcon={<LuHeart />} variant="primary" size="sm">
+              Solid
+            </Chip>
+            <Chip variant="primary" size="md">
+              Primary
+            </Chip>
+            <Chip variant="primary" size="lg">
+              Secondary
+            </Chip>
           </div>
         </section>
         {/* Pricing Cards */}
@@ -1887,394 +1867,6 @@ const Test = () => {
               <Skeleton width="100%" height="100%" animation="pulse" />
             </div>
           </div>
-        </section>
-        {/* Accordion */}
-        <section className="space-y-3">
-          <Typography variant={"h6"}>Accordion</Typography>
-          <div>
-            <Paragraph variant={"b3"}>Accordian Single</Paragraph>
-            <Accordion
-              type="single"
-              collapsible
-              defaultOpenValues={["item-1"]}
-              className="w-full"
-            >
-              <AccordionItem value="item-1">
-                <AccordionTrigger
-                  className="text-yellow-500"
-                  triggerIcon={<RiAlertFill />}
-                >
-                  What is your favorite template from BRIX Templates?
-                </AccordionTrigger>
-                <AccordionContent>
-                  {` Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.`}
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-2">
-                <AccordionTrigger>Is it styled?</AccordionTrigger>
-                <AccordionContent>
-                  {` Yes. It comes with default styles that match the other components'
-              aesthetic.`}
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-3">
-                <AccordionTrigger>Is it animated?</AccordionTrigger>
-                <AccordionContent>
-                  {` Yes. It's animated by default, but you can disable it if you
-              prefer.`}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
-          <Button onClick={() => setIsAllExpanded(!isAllExpanded)}>
-            {isAllExpanded ? "Collapse All" : "Expand All"}
-          </Button>
-          <div>
-            <Paragraph variant={"b3"}>Accordion Multiple</Paragraph>
-            <Accordion
-              expanded={isAllExpanded}
-              type="multiple"
-              collapsible
-              className="w-full"
-            >
-              <AccordionItem value="item-1">
-                <AccordionTrigger>
-                  What is your favorite template from BRIX Templates?
-                </AccordionTrigger>
-                <AccordionContent>
-                  {` Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.`}
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-2" disabled>
-                <AccordionTrigger>Is it styled?</AccordionTrigger>
-                <AccordionContent>
-                  {` Yes. It comes with default styles that match the other components'
-              aesthetic.`}
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-3">
-                <AccordionTrigger>Is it animated?</AccordionTrigger>
-                <AccordionContent>
-                  {` Yes. It's animated by default, but you can disable it if you
-              prefer.`}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
-        </section>
-        {/* Button */}
-        <section className="space-y-3">
-          <Typography variant="h6">Buttons</Typography>
-          <div className="flex items-center gap-3">
-            <Paragraph variant="b2">Primary:</Paragraph>
-            <Button
-              size={"xs"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"sm"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"md"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"lg"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-          </div>
-          <div className="flex items-center gap-3">
-            <Paragraph variant="b2">Primary Light:</Paragraph>
-            <Button
-              size={"xs"}
-              variant={"primary-light"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"sm"}
-              variant={"primary-light"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"md"}
-              variant={"primary-light"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"lg"}
-              variant={"primary-light"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-          </div>
-          <div className="flex items-center gap-3">
-            <Paragraph variant="b2">Secondary:</Paragraph>
-            <Button
-              size={"xs"}
-              variant={"secondary"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"sm"}
-              variant={"secondary"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"md"}
-              variant={"secondary"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"lg"}
-              variant={"secondary"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-          </div>
-          <div className="flex items-center gap-3">
-            <Paragraph variant="b2">Tertiary:</Paragraph>
-            <Button
-              size={"xs"}
-              variant={"tertiary"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"sm"}
-              variant={"tertiary"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"md"}
-              variant={"tertiary"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"lg"}
-              variant={"tertiary"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-          </div>
-          <div
-            className="flex items-center gap-3 div-glass py-5 px-4"
-            style={{ backgroundImage: `url(${nature.src})`, height: "150px" }}
-          >
-            <Paragraph variant="b2" className="text-light">
-              Quaternary:
-            </Paragraph>
-            <Button
-              size={"xs"}
-              variant={"quaternary"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"sm"}
-              variant={"quaternary"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"md"}
-              variant={"quaternary"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"lg"}
-              variant={"quaternary"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-          </div>
-          <div className="flex items-center gap-3">
-            <Paragraph variant="b2">Disabled:</Paragraph>
-            <Button
-              size={"sm"}
-              disabled
-              variant={"tertiary"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-          </div>
-          <div className="flex items-center gap-3">
-            <Paragraph variant="b2">Rounded:</Paragraph>
-            <Button
-              size={"sm"}
-              rounded
-              variant={"primary"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"sm"}
-              rounded
-              variant={"primary-light"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"sm"}
-              rounded
-              variant={"secondary"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-            <Button
-              size={"sm"}
-              rounded
-              variant={"tertiary"}
-              startIcon={<RiAddLine />}
-              endIcon={<RiAddLine />}
-            >
-              Button
-            </Button>
-          </div>
-        </section>
-        {/* Fill Button */}
-        <section>
-          <Typography variant="h6">Fill Button</Typography>
-          <FillButton
-            label="Button"
-            fillColor="bg-primary-600"
-            textHoverColor="group-hover:text-white"
-            icon={RiCheckLine}
-            className="w-[150px]"
-          />
-        </section>
-        {/* Floating Button */}
-        <section className="flex items-center gap-5">
-          <Typography variant="h6">Floating Button</Typography>
-          <Button
-            onClick={() => setShowButton((prev) => !prev)}
-            aria-expanded={showButton}
-          >
-            {showButton ? "Hide" : "Show"}
-          </Button>
-          {showButton && (
-            <div>
-              <FloatingButton
-                onClick={() => alert("Button Clicked!!")}
-                position="bottom-center"
-                variant={"quaternary"}
-                className="text-primary-500 border border-primary-500"
-              >
-                <RiAddLine />
-              </FloatingButton>
-              <FloatingButton
-                onClick={() => alert("Button Clicked!!")}
-                variant={"primary-light"}
-                position="bottom-left"
-              >
-                <RiAddLine />
-              </FloatingButton>
-              <FloatingButton
-                onClick={() => alert("Button Clicked!!")}
-                position="bottom-right"
-                variant={"secondary"}
-              >
-                <RiAddLine />
-              </FloatingButton>{" "}
-              <FloatingButton
-                onClick={() => alert("Button Clicked!!")}
-                position="top-left"
-                variant={"tertiary"}
-              >
-                <RiAddLine />
-              </FloatingButton>{" "}
-              <FloatingButton
-                onClick={() => alert("Button Clicked!!")}
-                position="top-right"
-              >
-                <RiAddLine />
-              </FloatingButton>
-            </div>
-          )}
-        </section>
-        {/* Slider */}
-        <section className="space-y-3">
-          <Typography variant={"h6"}>Slider</Typography>
-          <Slider
-            value={sliderValue}
-            min={10}
-            max={200}
-            onChange={(e) => handleSliderChange(Number(e.target.value))}
-          />
-          <Slider
-            value={sliderValue}
-            min={10}
-            max={200}
-            size="lg"
-            onChange={(e) => handleSliderChange(Number(e.target.value))}
-          />
         </section>
         {/* Loading */}
         <section className="flex flex-col items-center justify-center gap-2">
@@ -2811,142 +2403,420 @@ const Test = () => {
             </Callout>
           </div>
         </section>
-        {/* Nested Dropdown */}
-        <section className="flex items-center flex-wrap gap-5">
-          <Typography variant="h6">Nested Dropdown</Typography>
-          <NestedDropdown
-            data={industryList?.data || []}
-            onSelect={(_, path) => {
-              const pathIds = path?.map((p) => p?._id);
-              console.log("Selected Path IDs:", pathIds);
-            }}
-            placeholder="Select Parent"
-          />
+        {/* Tree View */}
+        <section className="space-y-3">
+          <Typography variant="h6">Tree View</Typography>
+          <TreeView
+            aria-label="Project files"
+            defaultExpandedIds={["frontend"]}
+            className="w-1/2 border border-gray-200 p-3 rounded-md"
+          >
+            {/* FRONTEND SECTION */}
+            <TreeView.Item
+              id="frontend"
+              onSelect={setSelected}
+              selected={selected === "frontend"}
+            >
+              <TreeView.LeadingVisual>
+                <RiAlertFill />{" "}
+              </TreeView.LeadingVisual>{" "}
+              Frontend
+              <TreeView.SubTree>
+                <TreeView.Item
+                  id="frontend-react"
+                  onSelect={setSelected}
+                  selected={selected === "frontend-react"}
+                >
+                  React App
+                  <TreeView.SubTree>
+                    <TreeView.Item
+                      id="frontend-react-components"
+                      onSelect={setSelected}
+                      selected={selected === "frontend-react-components"}
+                    >
+                      <TreeView.LeadingVisual>
+                        <RiAlertFill />{" "}
+                      </TreeView.LeadingVisual>{" "}
+                      Components
+                      <TreeView.SubTree>
+                        <TreeView.Item
+                          id="frontend-react-components-button"
+                          onSelect={setSelected}
+                          selected={
+                            selected === "frontend-react-components-button"
+                          }
+                        >
+                          <Button
+                            onClick={() => {
+                              alert("clicked");
+                            }}
+                          >
+                            Click
+                          </Button>
+                        </TreeView.Item>
+                        <TreeView.Item
+                          id="frontend-react-components-modal"
+                          onSelect={setSelected}
+                          selected={
+                            selected === "frontend-react-components-modal"
+                          }
+                        >
+                          Modal
+                        </TreeView.Item>
+                      </TreeView.SubTree>
+                    </TreeView.Item>
 
-          {/* <section>
-          <h1>Custom Width and Height</h1>
-          <NestedDropdown
-            data={industryList?.data || []}
-            onSelect={(_, path) => {
-              const pathIds = path?.map((p) => p?._id);
-              console.log("Selected Path IDs:", pathIds);
-            }}
-            placeholder="Choose Category"
-            width="300px"
-            height="250px"
-          />
+                    <TreeView.Item
+                      id="frontend-react-hooks"
+                      onSelect={setSelected}
+                      selected={selected === "frontend-react-hooks"}
+                    >
+                      Hooks
+                    </TreeView.Item>
+                    <TreeView.Item
+                      id="frontend-react-context"
+                      onSelect={setSelected}
+                      selected={selected === "frontend-react-context"}
+                    >
+                      Context
+                    </TreeView.Item>
+                  </TreeView.SubTree>
+                </TreeView.Item>
+
+                <TreeView.Item
+                  id="frontend-next"
+                  onSelect={setSelected}
+                  selected={selected === "frontend-next"}
+                >
+                  Next.js App
+                  <TreeView.SubTree>
+                    <TreeView.Item
+                      id="frontend-next-pages"
+                      onSelect={setSelected}
+                      selected={selected === "frontend-next-pages"}
+                    >
+                      Pages
+                    </TreeView.Item>
+                    <TreeView.Item
+                      id="frontend-next-api"
+                      onSelect={setSelected}
+                      selected={selected === "frontend-next-api"}
+                    >
+                      API Routes
+                    </TreeView.Item>
+                  </TreeView.SubTree>
+                </TreeView.Item>
+              </TreeView.SubTree>
+            </TreeView.Item>
+
+            {/* BACKEND SECTION */}
+            <TreeView.Item
+              id="backend"
+              onSelect={setSelected}
+              selected={selected === "backend"}
+            >
+              Backend
+              <TreeView.SubTree>
+                <TreeView.Item
+                  id="backend-api"
+                  onSelect={setSelected}
+                  selected={selected === "backend-api"}
+                >
+                  API Routes
+                  <TreeView.SubTree>
+                    <TreeView.Item
+                      id="backend-api-auth"
+                      onSelect={setSelected}
+                      selected={selected === "backend-api-auth"}
+                    >
+                      Auth
+                    </TreeView.Item>
+                    <TreeView.Item
+                      id="backend-api-users"
+                      onSelect={setSelected}
+                      selected={selected === "backend-api-users"}
+                    >
+                      Users
+                    </TreeView.Item>
+                    <TreeView.Item
+                      id="backend-api-products"
+                      onSelect={setSelected}
+                      selected={selected === "backend-api-products"}
+                    >
+                      Products
+                    </TreeView.Item>
+                  </TreeView.SubTree>
+                </TreeView.Item>
+
+                <TreeView.Item
+                  id="backend-database"
+                  onSelect={setSelected}
+                  selected={selected === "backend-database"}
+                >
+                  Database
+                  <TreeView.SubTree>
+                    <TreeView.Item
+                      id="backend-database-models"
+                      onSelect={setSelected}
+                      selected={selected === "backend-database-models"}
+                    >
+                      Models
+                    </TreeView.Item>
+                    <TreeView.Item
+                      id="backend-database-migrations"
+                      onSelect={setSelected}
+                      selected={selected === "backend-database-migrations"}
+                    >
+                      Migrations
+                    </TreeView.Item>
+                    <TreeView.Item
+                      id="backend-database-seeds"
+                      onSelect={setSelected}
+                      selected={selected === "backend-database-seeds"}
+                    >
+                      Seeds
+                    </TreeView.Item>
+                  </TreeView.SubTree>
+                </TreeView.Item>
+              </TreeView.SubTree>
+            </TreeView.Item>
+          </TreeView>
+          <TreeView
+            aria-label="Project files"
+            defaultExpandedIds={["frontend"]}
+            className="w-1/2 border border-gray-200 p-3 rounded-md"
+          >
+            {/* FRONTEND */}
+            <TreeView.Item id="frontend">
+              <TreeView.LeadingVisual>
+                <RiFolderFill className="text-blue-500" />
+              </TreeView.LeadingVisual>
+              Frontend
+              <TreeView.SubTree>
+                <TreeView.Item id="frontend-react">
+                  <TreeView.LeadingVisual>
+                    <RiFolderFill className="text-blue-400" />
+                  </TreeView.LeadingVisual>
+                  React App
+                  <TreeView.SubTree>
+                    <TreeView.Item id="frontend-react-components">
+                      Components
+                      <TreeView.SubTree>
+                        <TreeView.Item id="btn-js">
+                          <TreeView.LeadingVisual>
+                            <RiFileTextFill />
+                          </TreeView.LeadingVisual>
+                          Button.tsx
+                        </TreeView.Item>
+                      </TreeView.SubTree>
+                    </TreeView.Item>
+                  </TreeView.SubTree>
+                </TreeView.Item>
+              </TreeView.SubTree>
+            </TreeView.Item>
+
+            {/* BACKEND */}
+            <TreeView.Item id="backend">
+              <TreeView.LeadingVisual>
+                <RiFolderFill className="text-amber-500" />
+              </TreeView.LeadingVisual>
+              Backend
+              <TreeView.SubTree>
+                <TreeView.Item id="backend-api">API Routes</TreeView.Item>
+              </TreeView.SubTree>
+            </TreeView.Item>
+
+            {/* SETTINGS (No SubTree) */}
+            <TreeView.Item id="settings">
+              <TreeView.LeadingVisual>
+                <RiSettings4Line />
+              </TreeView.LeadingVisual>
+              Settings
+            </TreeView.Item>
+          </TreeView>
+          <TreeView
+            aria-label="Files changed"
+            defaultExpandedIds={["src"]}
+            className="w-1/2 border border-gray-200 p-3 rounded-md"
+          >
+            <TreeView.Item
+              id="src"
+              onSelect={setSelected}
+              selected={selected === "src"}
+            >
+              <TreeView.LeadingVisual>
+                <RiFolderOpenFill color="#1765dc" size={16} />
+              </TreeView.LeadingVisual>
+              src
+              <TreeView.SubTree>
+                <TreeView.Item
+                  id="src/Avatar.tsx"
+                  onSelect={setSelected}
+                  selected={selected === "src/Avatar.tsx"}
+                >
+                  <TreeView.LeadingVisual>
+                    <RiFileLine size={16} />
+                  </TreeView.LeadingVisual>
+                  Avatar.tsx
+                  <TreeView.TrailingVisual label="Added">
+                    <RiAddLine size={16} />
+                  </TreeView.TrailingVisual>
+                </TreeView.Item>
+
+                <TreeView.Item
+                  id="src/Button.tsx"
+                  onSelect={setSelected}
+                  selected={selected === "src/Button.tsx"}
+                >
+                  <TreeView.LeadingVisual>
+                    <RiFileLine size={16} />
+                  </TreeView.LeadingVisual>
+                  Button.tsx
+                  <TreeView.TrailingVisual label="Modified">
+                    <RiEditLine size={16} />
+                  </TreeView.TrailingVisual>
+                </TreeView.Item>
+              </TreeView.SubTree>
+            </TreeView.Item>
+
+            <TreeView.Item
+              id="package.json"
+              onSelect={setSelected}
+              selected={selected === "package.json"}
+            >
+              <TreeView.LeadingVisual>
+                <RiFileLine size={16} />
+              </TreeView.LeadingVisual>
+              package.json
+              <TreeView.TrailingVisual label="Modified">
+                <RiEditLine size={16} />
+              </TreeView.TrailingVisual>
+            </TreeView.Item>
+          </TreeView>
+          <div className="my-5">
+            <h1>Allow multiple expanded (default)</h1>
+            <TreeView
+              aria-label="Example Tree"
+              className="w-1/2 border border-gray-200 p-3 rounded-md"
+            >
+              <TreeView.Item id="1">
+                Parent 1
+                <TreeView.SubTree>
+                  <TreeView.Item id="1.1">Child 1</TreeView.Item>
+                  <TreeView.Item id="1.2">Child 2</TreeView.Item>
+                </TreeView.SubTree>
+              </TreeView.Item>
+
+              <TreeView.Item id="2">
+                Parent 2
+                <TreeView.SubTree>
+                  <TreeView.Item id="2.1">Child A</TreeView.Item>
+                  <TreeView.Item id="2.2">Child B</TreeView.Item>
+                </TreeView.SubTree>
+              </TreeView.Item>
+            </TreeView>
+          </div>
+          <div>
+            <h1>Treeview Mode (only one expanded)</h1>
+            <TreeView
+              aria-label="Accordion Tree"
+              allowMultiple={false}
+              className="w-1/2 border border-gray-200 p-3 rounded-md"
+            >
+              <TreeView.Item id="1">
+                Section 1
+                <TreeView.SubTree>
+                  <TreeView.Item id="1.1">Item A</TreeView.Item>
+                </TreeView.SubTree>
+              </TreeView.Item>
+              <TreeView.Item id="2">
+                Section 2
+                <TreeView.SubTree>
+                  <TreeView.Item id="2.1">Item B</TreeView.Item>
+                </TreeView.SubTree>
+              </TreeView.Item>
+            </TreeView>
+          </div>
         </section>
-        <section>
-          <h1>Disabled State</h1>
-          <NestedDropdown
-            data={industryList?.data || []}
-            onSelect={(_, path) => {
-              const pathIds = path?.map((p) => p?._id);
-              console.log("Selected:", pathIds);
-            }}
-            placeholder="Select Parent"
-            disabled={true}
-          />
-        </section>
-        <section>
-          <h1>With Error State</h1>
-          <NestedDropdown
-            data={industryList?.data || []}
-            onSelect={(_, path) => {
-              const pathIds = path?.map((p) => p?._id);
-              console.log("Selected:", pathIds);
-            }}
-            placeholder="Select Parent"
-            disabled={true}
-          />
-        </section>
-        <section>
-          <h1>Controlled Component</h1>
-          <NestedDropdown
-            data={industryList?.data || []}
-            onSelect={(item, path) => {
-              const pathIds = path?.map((p) => p?._id);
-              setSelectedItem(item);
-              console.log("Selected IDs:", pathIds);
-            }}
-            placeholder="Select Parent"
-            value={selectedItem}
-          />
-        </section>
-        <section>
-          <h1>Without Clear Button</h1>
-          <NestedDropdown
-            data={industryList?.data || []}
-            onSelect={(_, path) => {
-              const pathIds = path?.map((p) => p?._id);
-              console.log("Selected:", pathIds);
-            }}
-            placeholder="Select Parent"
-            clearable={false}
-          />
-        </section>
-        <section>
-          <h1>Keep Dropdown Open After Selection</h1>
-          <NestedDropdown
-            data={industryList?.data || []}
-            onSelect={(_, path) => {
-              const pathIds = path?.map((p) => p?._id);
-              console.log("Selected:", pathIds);
-            }}
-            placeholder="Select Parent"
-            closeOnSelect={false}
-          />
-        </section>
-        <section>
-          <h1>With Custom Search Placeholder</h1>
-          <NestedDropdown
-            data={industryList?.data || []}
-            onSelect={(_, path) => {
-              const pathIds = path?.map((p) => p?._id);
-              console.log("Selected:", pathIds);
-            }}
-            placeholder="Select Parent"
-            searchPlaceholder="Search industries..."
-            // searchDebounce={500}
-          />
-        </section>
-        <section>
-          <h1>With Loading State</h1>
-          <NestedDropdown
-            data={industryList?.data || []}
-            onSelect={(_, path) => {
-              const pathIds = path?.map((p) => p?._id);
-              console.log("Selected:", pathIds);
-            }}
-            placeholder="Select Parent"
-            loading={true}
-          />
-        </section>
-        <section>
-          <h1>Custom Styling</h1>
-          <NestedDropdown
-            data={industryList?.data || []}
-            onSelect={(_, path) => {
-              const pathIds = path?.map((p) => p?._id);
-              console.log("Selected:", pathIds);
-            }}
-            placeholder="Select Parent"
-            className="custom-dropdown"
-            width="350px"
-          />
-        </section>
-        <section>
-          <h1>No Results Text Customized</h1>
-          <NestedDropdown
-            data={[]}
-            onSelect={(_, path) => {
-              const pathIds = path?.map((p) => p);
-              console.log("Selected:", pathIds);
-            }}
-            placeholder="Select Parent"
-            noResultsText="No industries found. Try another search."
-          />
-        </section> */}
+        {/* Accordion */}
+        <section className="space-y-3">
+          <Typography variant={"h6"}>Accordion</Typography>
+          <div>
+            <Paragraph variant={"b3"}>Accordian Single</Paragraph>
+            <Accordion
+              type="single"
+              collapsible
+              defaultOpenValues={["item-1"]}
+              className="w-full"
+            >
+              <AccordionItem value="item-1">
+                <AccordionTrigger
+                  className="text-yellow-500"
+                  triggerIcon={<RiAlertFill />}
+                >
+                  What is your favorite template from BRIX Templates?
+                </AccordionTrigger>
+                <AccordionContent>
+                  {` Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat.`}
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2">
+                <AccordionTrigger>Is it styled?</AccordionTrigger>
+                <AccordionContent>
+                  {` Yes. It comes with default styles that match the other components'
+              aesthetic.`}
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-3">
+                <AccordionTrigger>Is it animated?</AccordionTrigger>
+                <AccordionContent>
+                  {` Yes. It's animated by default, but you can disable it if you
+              prefer.`}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+          <Button onClick={() => setIsAllExpanded(!isAllExpanded)}>
+            {isAllExpanded ? "Collapse All" : "Expand All"}
+          </Button>
+          <div>
+            <Paragraph variant={"b3"}>Accordion Multiple</Paragraph>
+            <Accordion
+              expanded={isAllExpanded}
+              type="multiple"
+              collapsible
+              className="w-full"
+            >
+              <AccordionItem value="item-1">
+                <AccordionTrigger>
+                  What is your favorite template from BRIX Templates?
+                </AccordionTrigger>
+                <AccordionContent>
+                  {` Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat.`}
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2" disabled>
+                <AccordionTrigger>Is it styled?</AccordionTrigger>
+                <AccordionContent>
+                  {` Yes. It comes with default styles that match the other components'
+              aesthetic.`}
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-3">
+                <AccordionTrigger>Is it animated?</AccordionTrigger>
+                <AccordionContent>
+                  {` Yes. It's animated by default, but you can disable it if you
+              prefer.`}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
         </section>
       </main>
       <Footer
