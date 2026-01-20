@@ -441,13 +441,7 @@ const Test = () => {
   // treeview
   const [selected, setSelected] = useState<string | null>(null);
 
-  // slider
-  const [sliderValue, setSliderValue] = useState<number>(50);
-
-  const handleSliderChange = (value: number) => {
-    setSliderValue(value);
-  };
-
+  // pagination
   const rowsPerPage = 5;
   const [page, setPage] = useState(0);
 
@@ -461,7 +455,24 @@ const Test = () => {
     page * rowsPerPage + rowsPerPage,
   );
 
+  // accordian
   const [isAllExpanded, setIsAllExpanded] = useState(false);
+
+  // floating button
+  const [showButton, setShowButton] = useState(false);
+
+  // slider
+  const [sliderValue, setSliderValue] = useState<number>(50);
+
+  const handleSliderChange = (value: number) => {
+    setSliderValue(value);
+  };
+
+  // notice
+  const [notice, setNotice] = useState(false);
+
+  // modal
+  const [showModal, setShowModal] = useState(false);
 
   // drawer
   type DrawerPosition = "top" | "right" | "bottom" | "left";
@@ -471,24 +482,8 @@ const Test = () => {
 
   const positions: DrawerPosition[] = ["top", "right", "bottom", "left"];
 
-  // modal
-  const [showModal, setShowModal] = useState(false);
-
-  // tabs
-  const [value, setValue] = useState("1");
-
-  const handleTabChange = (newValue: string) => {
-    setValue(newValue);
-  };
-
   // popover
   const [isOpen, setIsOpen] = useState(false);
-
-  // floating button
-  const [showButton, setShowButton] = useState(false);
-
-  // notice
-  const [notice, setNotice] = useState(false);
 
   // progress
   const [progress, setProgress] = useState(0);
@@ -497,6 +492,13 @@ const Test = () => {
     const timer = setTimeout(() => setProgress(80), 500);
     return () => clearTimeout(timer);
   }, [progress]);
+
+  // tabs
+  const [value, setValue] = useState("1");
+
+  const handleTabChange = (newValue: string) => {
+    setValue(newValue);
+  };
 
   return (
     <div className="bg-light dark:bg-dark">
@@ -534,18 +536,6 @@ const Test = () => {
           </div>
         </header>
       </div>
-
-      <section className="my-10 mx-10 flex items-center gap-5">
-        <Typography variant="h6">Nested Dropdown: </Typography>
-        <NestedDropdown
-          data={industryList?.data || []}
-          onSelect={(_, path) => {
-            const pathIds = path?.map((p) => p?._id);
-            console.log("Selected Path IDs:", pathIds);
-          }}
-          placeholder="Select Parent"
-        />
-      </section>
 
       <main className="space-y-5 p-4">
         {/* Typography */}
@@ -1508,13 +1498,8 @@ const Test = () => {
             </TreeView>
           </div>
         </section>
-        <div className="border rounded-lg p-2 bg-white dark:bg-gray-950">
-          <div className="mt-4 text-xs text-gray-500 px-2">
-            Selected: {selected || "None"}
-          </div>
-        </div>
-
-        <section className="space-y-4">
+        {/* Pricing Cards */}
+        <section className="space-y-3">
           <Typography variant={"h6"}>Pricing Cards</Typography>
           <div className="flex flex-wrap items-center gap-spacing-lg">
             <Card className="w-full p-spacing-md md:p-spacing-lg max-w-[333px] space-y-spacing-md bg-light border-2 border-primary-200 rounded-radius-xl">
@@ -1763,10 +1748,11 @@ const Test = () => {
             </Card>
           </div>
         </section>
-        <section>
-          <Typography variant={"h6"}>Cards: </Typography>
-          <div className="my-5">
-            <h1>Card Large</h1>
+        {/* Basic Cards */}
+        <section className="space-y-3">
+          <Typography variant={"h6"}>Basic Cards</Typography>
+          <div>
+            <Paragraph variant={"b3"}>Card Large</Paragraph>
             <Card className="w-[70%] rounded-radius-lg px-[64px] py-[32px] gradientOne border-2 border-primary-500 hover:border-2 hover:border-primary-500">
               <CardHeader>
                 <CardTitle className="text-[32px] font-bold leading-[48px] text-white">
@@ -1795,8 +1781,8 @@ const Test = () => {
               </CardFooter>
             </Card>
           </div>
-          <div className="my-5">
-            <h1 className="dark:text-gray-25 text-gray-900">Card Small</h1>
+          <div>
+            <Paragraph variant={"b3"}>Card Small</Paragraph>
             <Card className="w-[711px] rounded-radius-lg p-[32px] gradientOne border-2 border-primary-500 hover:border-2 hover:border-primary-500">
               <CardHeader>
                 <CardTitle className="text-[24px] font-bold leading-[36px] text-white">
@@ -1822,11 +1808,14 @@ const Test = () => {
             </Card>
           </div>
         </section>
-        <section className="my-5">
+        {/* Image Cards */}
+        <section className="space-y-3">
+          <Typography variant={"h6"}>Image Cards</Typography>
           <ImageCard
             cardTitle="Modal Card Title"
             cardDesc="Lorem ipsum dolor sit amet consectetur. Accumsan."
             className="w-[466px] h-[406px] bg-primary-100"
+            cardImg="/assets/nature.png"
           >
             <div className="my-2 w-[50%]">
               <Chip endIcon={<LuHeart />} variant="primary">
@@ -1834,8 +1823,6 @@ const Test = () => {
               </Chip>
             </div>
           </ImageCard>
-        </section>
-        <section className="my-5">
           <ImageCard
             cardTitle="Modal Card Title"
             cardDesc="Lorem ipsum dolor sit amet consectetur. Accumsan."
@@ -1849,27 +1836,30 @@ const Test = () => {
             </div>
           </ImageCard>
         </section>
-        <div className="my-5">
-          <section>
-            <h1 className="dark:text-gray-25 text-gray-900">Default</h1>
+        {/* Stats Cards */}
+        <section className="space-y-3">
+          <Typography variant={"h6"}>Stats Cards</Typography>
+          <div>
+            <Paragraph variant={"b3"}>Default</Paragraph>
             <StatsCard
               className="w-[400px] h-[400px]"
               statTitle="Number"
               statDesc="Value Descritpion and other data Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores, quos?"
               cardIcon={<LuAngry size={40} />}
             />
-          </section>
-          <section>
-            <h1 className="dark:text-gray-25 text-gray-900">Customise</h1>
+          </div>
+          <div>
+            <Paragraph variant={"b3"}>Customise</Paragraph>
             <StatsCard
               className="w-[400px] h-[400px] bg-gradient-to-b from-indigo-500 dark:from-cyan-500 dark:to-blue-500"
               statTitle="Number"
               statDesc="Value Descritpion and other data Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores, quos?"
               cardIcon={<LuAngry size={40} />}
             />
-          </section>
-        </div>
-        <section className="my-5 space-y-3">
+          </div>
+        </section>
+        {/* List Pagination */}
+        <section className="space-y-3">
           <Typography variant="h6">List Pagination</Typography>
           <div className="flex flex-wrap items-center gap-4">
             {paginatedData.map((item) => (
@@ -1883,12 +1873,12 @@ const Test = () => {
             rowsPerPage={rowsPerPage}
           />
         </section>
-        <section className="my-5">
-          <Typography variant="h6">Skeleton: </Typography>
+        {/* Skeleton */}
+        <section className="space-y-3">
+          <Typography variant="h6">Skeleton</Typography>
           <div className="flex flex-col gap-2">
             <Skeleton animation="wave" width="200px" height="200px" />
             <Skeleton width="200px" height="200px" circle animation="shimmer" />
-            {/* Fluid text line skeletons */}
             <div className="w-[20%] min-w-[120px] max-w-[167px] h-[14px]">
               <Skeleton width="100%" height="100%" animation="pulse" />
             </div>
@@ -1898,83 +1888,87 @@ const Test = () => {
             </div>
           </div>
         </section>
-        {/* accordion */}
-        <section className="my-5">
-          <Typography variant={"h6"}>Accordion Single</Typography>
+        {/* Accordion */}
+        <section className="space-y-3">
+          <Typography variant={"h6"}>Accordion</Typography>
+          <div>
+            <Paragraph variant={"b3"}>Accordian Single</Paragraph>
+            <Accordion
+              type="single"
+              collapsible
+              defaultOpenValues={["item-1"]}
+              className="w-full"
+            >
+              <AccordionItem value="item-1">
+                <AccordionTrigger
+                  className="text-yellow-500"
+                  triggerIcon={<RiAlertFill />}
+                >
+                  What is your favorite template from BRIX Templates?
+                </AccordionTrigger>
+                <AccordionContent>
+                  {` Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat.`}
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2">
+                <AccordionTrigger>Is it styled?</AccordionTrigger>
+                <AccordionContent>
+                  {` Yes. It comes with default styles that match the other components'
+              aesthetic.`}
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-3">
+                <AccordionTrigger>Is it animated?</AccordionTrigger>
+                <AccordionContent>
+                  {` Yes. It's animated by default, but you can disable it if you
+              prefer.`}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
           <Button onClick={() => setIsAllExpanded(!isAllExpanded)}>
             {isAllExpanded ? "Collapse All" : "Expand All"}
           </Button>
-          <Accordion
-            type="single"
-            collapsible
-            defaultOpenValues={["item-1"]}
-            className="w-full"
-          >
-            <AccordionItem value="item-1">
-              <AccordionTrigger
-                className="text-yellow-500"
-                triggerIcon={<RiAlertFill />}
-              >
-                What is your favorite template from BRIX Templates?
-              </AccordionTrigger>
-              <AccordionContent>
-                {` Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          <div>
+            <Paragraph variant={"b3"}>Accordion Multiple</Paragraph>
+            <Accordion
+              expanded={isAllExpanded}
+              type="multiple"
+              collapsible
+              className="w-full"
+            >
+              <AccordionItem value="item-1">
+                <AccordionTrigger>
+                  What is your favorite template from BRIX Templates?
+                </AccordionTrigger>
+                <AccordionContent>
+                  {` Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
               enim ad minim veniam, quis nostrud exercitation ullamco laboris
               nisi ut aliquip ex ea commodo consequat.`}
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2">
-              <AccordionTrigger>Is it styled?</AccordionTrigger>
-              <AccordionContent>
-                {` Yes. It comes with default styles that match the other components'
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2" disabled>
+                <AccordionTrigger>Is it styled?</AccordionTrigger>
+                <AccordionContent>
+                  {` Yes. It comes with default styles that match the other components'
               aesthetic.`}
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-3">
-              <AccordionTrigger>Is it animated?</AccordionTrigger>
-              <AccordionContent>
-                {` Yes. It's animated by default, but you can disable it if you
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-3">
+                <AccordionTrigger>Is it animated?</AccordionTrigger>
+                <AccordionContent>
+                  {` Yes. It's animated by default, but you can disable it if you
               prefer.`}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
         </section>
-        <section className="my-5">
-          <Typography variant={"h6"}>Accordion Multiple</Typography>
-          <Accordion
-            expanded={isAllExpanded}
-            type="multiple"
-            collapsible
-            className="w-full"
-          >
-            <AccordionItem value="item-1">
-              <AccordionTrigger>
-                What is your favorite template from BRIX Templates?
-              </AccordionTrigger>
-              <AccordionContent>
-                {` Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.`}
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2" disabled>
-              <AccordionTrigger>Is it styled?</AccordionTrigger>
-              <AccordionContent>
-                {` Yes. It comes with default styles that match the other components'
-              aesthetic.`}
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-3">
-              <AccordionTrigger>Is it animated?</AccordionTrigger>
-              <AccordionContent>
-                {` Yes. It's animated by default, but you can disable it if you
-              prefer.`}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </section>
+        {/* Button */}
         <section className="space-y-3">
           <Typography variant="h6">Buttons</Typography>
           <div className="flex items-center gap-3">
@@ -2205,8 +2199,9 @@ const Test = () => {
             </Button>
           </div>
         </section>
+        {/* Fill Button */}
         <section>
-          <Typography variant="h6">Fill Button:</Typography>
+          <Typography variant="h6">Fill Button</Typography>
           <FillButton
             label="Button"
             fillColor="bg-primary-600"
@@ -2215,8 +2210,9 @@ const Test = () => {
             className="w-[150px]"
           />
         </section>
+        {/* Floating Button */}
         <section className="flex items-center gap-5">
-          <Typography variant="h6">Floating Button:</Typography>
+          <Typography variant="h6">Floating Button</Typography>
           <Button
             onClick={() => setShowButton((prev) => !prev)}
             aria-expanded={showButton}
@@ -2263,8 +2259,9 @@ const Test = () => {
             </div>
           )}
         </section>
-        <section className="space-y-5">
-          <Typography variant={"h6"}>Slider: </Typography>
+        {/* Slider */}
+        <section className="space-y-3">
+          <Typography variant={"h6"}>Slider</Typography>
           <Slider
             value={sliderValue}
             min={10}
@@ -2279,8 +2276,9 @@ const Test = () => {
             onChange={(e) => handleSliderChange(Number(e.target.value))}
           />
         </section>
+        {/* Loading */}
         <section className="flex flex-col items-center justify-center gap-2">
-          <Typography variant={"h6"}>Loading:</Typography>
+          <Typography variant={"h6"}>Loading</Typography>
           <Loading width="50px" height="50px" loaderColor="green" />
           <span className="font-bold">Hold On ...</span>
           <p className="text-sm text-gray-500">
@@ -2293,14 +2291,16 @@ const Test = () => {
             Loading <Loading width="15px" height="15px" variant="heavy" />
           </Button>
         </section>
+        {/* Spinner */}
         <section className="flex items-center gap-6">
-          <Typography variant={"h6"}>Spinner:</Typography>
+          <Typography variant={"h6"}>Spinner</Typography>
           <Spinner size="sm" />
           <Spinner size="md" />
           <Spinner size="lg" />
         </section>
-        <div className="flex   items-center gap-8">
-          <Typography variant={"h6"}>Notice: </Typography>
+        {/* Notice */}
+        <section className="flex items-center gap-8">
+          <Typography variant={"h6"}>Notice</Typography>
           <Button onClick={() => setNotice(true)}>Show Notice</Button>
           <Notice
             open={notice}
@@ -2344,9 +2344,10 @@ const Test = () => {
             noticeTitle="Notice on Bottom Right"
             position="bottom-right"
           />
-        </div>
-        <section className="my-5">
-          <Typography variant={"h6"}>Modal:</Typography>
+        </section>
+        {/* Modal */}
+        <section className="space-y-3">
+          <Typography variant={"h6"}>Modal</Typography>
           <Button onClick={() => setShowModal(true)}>Show Modal</Button>
           <Modal
             showModal={showModal}
@@ -2366,8 +2367,9 @@ const Test = () => {
             </div>
           </Modal>
         </section>
-        <section className="my-5 space-y-4">
-          <Typography variant={"h6"}>Drawer:</Typography>
+        {/* Drawer */}
+        <section className="space-y-3">
+          <Typography variant={"h6"}>Drawer</Typography>
           <div className="flex gap-3 flex-wrap">
             {positions.map((pos) => (
               <Button key={pos} onClick={() => setOpenPosition(pos)}>
@@ -2393,8 +2395,9 @@ const Test = () => {
             </Drawer>
           ))}
         </section>
-        <section className="my-5 space-y-4">
-          <Typography variant={"h6"}>Popover:</Typography>
+        {/* Popover */}
+        <section className="space-y-3">
+          <Typography variant={"h6"}>Popover</Typography>
           <div className="flex justify-center">
             <Popover
               isOpen={isOpen}
@@ -2452,8 +2455,9 @@ const Test = () => {
             </Popover>
           </div>
         </section>
-        <section className="my-5 w-[500px] space-y-3">
-          <Typography variant={"h6"}>Progress:</Typography>
+        {/* Progress */}
+        <section className="w-[500px] space-y-3">
+          <Typography variant={"h6"}>Progress</Typography>
           <Progress
             progressColor="bg-success"
             progress={progress}
@@ -2481,8 +2485,9 @@ const Test = () => {
             progressTextPosition="bottom"
           />
         </section>
-        <section className="my-5">
-          <Typography variant={"h6"}>Circular Progress:</Typography>
+        {/* Circular Progress */}
+        <section className="space-y-3">
+          <Typography variant={"h6"}>Circular Progress</Typography>
           <div className="flex items-center gap-5 py-10">
             <CircularProgress
               strokeLinecap="square"
@@ -2508,8 +2513,9 @@ const Test = () => {
             />
           </div>
         </section>
+        {/* Tabs */}
         <section>
-          <Typography variant={"h6"}>Tabs:</Typography>
+          <Typography variant={"h6"}>Tabs</Typography>
           <div className="my-5 space-y-4">
             <Paragraph variant={"b3"}>Default Tabs:</Paragraph>
             <TabsContainer value={value}>
@@ -2704,8 +2710,9 @@ const Test = () => {
             </TabsContainer>
           </div>
         </section>
-        <section className="my-5 space-y-4">
-          <Typography variant={"h6"}>Callout:</Typography>
+        {/* Callout */}
+        <section className="space-y-3">
+          <Typography variant={"h6"}>Callout</Typography>
           <div className="space-y-3">
             <h1 className="text-display-xs text-primary-600">Filled:</h1>
             <Callout
@@ -2803,6 +2810,143 @@ const Test = () => {
               this page.
             </Callout>
           </div>
+        </section>
+        {/* Nested Dropdown */}
+        <section className="flex items-center flex-wrap gap-5">
+          <Typography variant="h6">Nested Dropdown</Typography>
+          <NestedDropdown
+            data={industryList?.data || []}
+            onSelect={(_, path) => {
+              const pathIds = path?.map((p) => p?._id);
+              console.log("Selected Path IDs:", pathIds);
+            }}
+            placeholder="Select Parent"
+          />
+
+          {/* <section>
+          <h1>Custom Width and Height</h1>
+          <NestedDropdown
+            data={industryList?.data || []}
+            onSelect={(_, path) => {
+              const pathIds = path?.map((p) => p?._id);
+              console.log("Selected Path IDs:", pathIds);
+            }}
+            placeholder="Choose Category"
+            width="300px"
+            height="250px"
+          />
+        </section>
+        <section>
+          <h1>Disabled State</h1>
+          <NestedDropdown
+            data={industryList?.data || []}
+            onSelect={(_, path) => {
+              const pathIds = path?.map((p) => p?._id);
+              console.log("Selected:", pathIds);
+            }}
+            placeholder="Select Parent"
+            disabled={true}
+          />
+        </section>
+        <section>
+          <h1>With Error State</h1>
+          <NestedDropdown
+            data={industryList?.data || []}
+            onSelect={(_, path) => {
+              const pathIds = path?.map((p) => p?._id);
+              console.log("Selected:", pathIds);
+            }}
+            placeholder="Select Parent"
+            disabled={true}
+          />
+        </section>
+        <section>
+          <h1>Controlled Component</h1>
+          <NestedDropdown
+            data={industryList?.data || []}
+            onSelect={(item, path) => {
+              const pathIds = path?.map((p) => p?._id);
+              setSelectedItem(item);
+              console.log("Selected IDs:", pathIds);
+            }}
+            placeholder="Select Parent"
+            value={selectedItem}
+          />
+        </section>
+        <section>
+          <h1>Without Clear Button</h1>
+          <NestedDropdown
+            data={industryList?.data || []}
+            onSelect={(_, path) => {
+              const pathIds = path?.map((p) => p?._id);
+              console.log("Selected:", pathIds);
+            }}
+            placeholder="Select Parent"
+            clearable={false}
+          />
+        </section>
+        <section>
+          <h1>Keep Dropdown Open After Selection</h1>
+          <NestedDropdown
+            data={industryList?.data || []}
+            onSelect={(_, path) => {
+              const pathIds = path?.map((p) => p?._id);
+              console.log("Selected:", pathIds);
+            }}
+            placeholder="Select Parent"
+            closeOnSelect={false}
+          />
+        </section>
+        <section>
+          <h1>With Custom Search Placeholder</h1>
+          <NestedDropdown
+            data={industryList?.data || []}
+            onSelect={(_, path) => {
+              const pathIds = path?.map((p) => p?._id);
+              console.log("Selected:", pathIds);
+            }}
+            placeholder="Select Parent"
+            searchPlaceholder="Search industries..."
+            // searchDebounce={500}
+          />
+        </section>
+        <section>
+          <h1>With Loading State</h1>
+          <NestedDropdown
+            data={industryList?.data || []}
+            onSelect={(_, path) => {
+              const pathIds = path?.map((p) => p?._id);
+              console.log("Selected:", pathIds);
+            }}
+            placeholder="Select Parent"
+            loading={true}
+          />
+        </section>
+        <section>
+          <h1>Custom Styling</h1>
+          <NestedDropdown
+            data={industryList?.data || []}
+            onSelect={(_, path) => {
+              const pathIds = path?.map((p) => p?._id);
+              console.log("Selected:", pathIds);
+            }}
+            placeholder="Select Parent"
+            className="custom-dropdown"
+            width="350px"
+          />
+        </section>
+        <section>
+          <h1>No Results Text Customized</h1>
+          <NestedDropdown
+            data={[]}
+            onSelect={(_, path) => {
+              const pathIds = path?.map((p) => p);
+              console.log("Selected:", pathIds);
+            }}
+            placeholder="Select Parent"
+            noResultsText="No industries found. Try another search."
+          />
+        </section> */}
         </section>
       </main>
       <Footer
